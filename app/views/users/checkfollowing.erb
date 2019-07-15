@@ -1,0 +1,11 @@
+<div class="container"> 
+  <% if @user.followed.blank? %>
+    <b>This user is not following anyone yet!</b>
+  <% else %>
+    <p><%= @user.name %> is following:</p>
+      <% @user.followed.each do |user| %>
+        <p><a href="/users/<%= user.id %>"> @<%= user.username %></a></p>
+        <br>
+      <% end %>
+   <% end %>
+</div>

@@ -1,0 +1,72 @@
+<div class="container"> 
+
+ <div class= "row">
+<div class="col-md-3 col-md-offset-4">
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+      <div style="text-align: center;">
+        <h3><%= @user.name %></h3>
+        <h4>@<%= @user.username %></h4>
+
+        <% if current_user && current_user.id == params[:id].to_i %>
+          <form action="/users/<%= @user.id %>/edit">
+            <input type="submit" value="Edit Profile" class="btn btn-default">
+          </form>
+        <% elsif current_user.following?(@user) %>
+	        <form action="/users/<%= @user.id %>/unfollow" method="post">
+              <input type="hidden" name="_method" value="DELETE">
+		          <input type="submit" value="Unfollow" class="btn btn-default">
+	        </form>
+        <% else %>
+          <form action="/users/<%= @user.id %>/follow" method="post">
+            <input type="submit" value="Follow" class="btn btn-default">
+          </form>
+        <% end %> 
+      </div>
+    </div>
+      <div class="panel-body">
+               <p style="text-align: center;">Meows: <%= @user.tweets.count %> </p>
+         <p style="text-align: center;"><a class="link" href="/users/<%= @user.id %>/checkfollowing">Following: <%= @user.followed.count %></a> 
+          <a class="link" href="/users/<%= @user.id %>/checkfollowers">Followers: <%= @user.followers.count %></a></p>
+
+      </div>
+    </div>
+
+
+</div>
+
+
+
+</div>
+
+
+<% if @currenttweets.present? %>
+<div class="col-md-12">
+
+<% @currenttweets.each do |tweet|%>
+<div class="panel panel-default">
+  <div class="panel-body">
+  <p><a href="/users/<%= tweet.user.id %>"> @<%= tweet.user.username %></a> 
+ <time class="timeago" datetime="<%= tweet.created_at.getutc.iso8601.to_s %>"><%= tweet.created_at.strftime("%l:%M %p %v") %></time>
+</p>
+<p><a class="link" href="/tweets/<%= tweet.id %>"><%= tweet.title %></a></p>
+
+</div>
+</div>
+
+<% end %>
+
+
+</div>
+<% else %>
+
+<div class="col-md-3 col-md-offset-4">
+  <b style="text-align: center; display: block;">This user has no meows yet!</b>
+</div>
+
+<% end %>
+
+<script type="text/javascript">
+  $("time.timeago").timeago();
+</script>

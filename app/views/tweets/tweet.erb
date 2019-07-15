@@ -1,0 +1,20 @@
+<div class="container"> 
+<p><a href="/users/<%= @tweet.user.id %>"> @<%= @tweet.user.username %></a> 
+<time class="timeago" datetime="<%= @tweet.created_at.getutc.iso8601.to_s %>"><%= @tweet.created_at.strftime("%l:%M %p %v") %></time></p>
+<b><%= @tweet.title %></b>
+<% if current_user && current_user.id == @tweet.user_id.to_i %>
+  <form action="/tweets/<%= @tweet.id %>" method=post>
+    <input type="hidden" name="_method" value="DELETE">
+    <input type="submit" value="Delete" class="btn btn-default">
+  </form>
+
+  <form action="/tweets/<%= @tweet.id %>/edit">
+    <input type="submit" value="Edit" class="btn btn-default">
+  </form>
+
+<% end %>
+</div>
+
+<script type="text/javascript">
+  $("time.timeago").timeago();
+</script> 

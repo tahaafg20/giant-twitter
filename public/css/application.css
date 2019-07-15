@@ -1,0 +1,74 @@
+
+.jumbotron {
+    background-image: url("/img/meow.jpg");
+    background-color: white;
+    margin-bottom: 0;
+    min-height: 50%;
+    background-repeat: no-repeat;
+    background-position: center;
+    -webkit-background-size: cover;
+    background-size: cover;
+}
+
+
+.jumbotron h1 {
+  font-family: Permanent Marker, serif;
+  color: #5D7474;
+  font-size: 92px;
+}
+
+
+.jumbotron p {
+  width: 1100px;
+  /*color: white;*/
+/*  margin-left: 190px;*/
+  font-weight: 300;
+  float: right;
+}
+
+
+
+h1 {
+    font-family: 'Lobster';
+    font-size: 40px;
+    color: #162b0d;
+}
+
+a:link {
+    color: #f33f3f;
+}
+
+/* visited link */
+a:visited {
+    color: #489E6C;
+}
+
+/* mouse over link */
+a:hover {
+    color: pink;
+}
+
+/* selected link */
+a:active {
+    color: blue;
+}
+
+.tweetarea {
+   min-width: 547px;
+   position: relative;
+   display: inline-block;
+}
+
+.tweetarea textarea{
+    width: 547px;
+    height: 80px;
+    margin-bottom: 5px;
+}
+
+
+.tweetarea span.buttonfortxtarea {
+    display: block;
+    text-align: right;
+ }
+  
+ 

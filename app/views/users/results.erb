@@ -1,0 +1,13 @@
+<div class="container"> 
+  <% if params[:search].blank? %>
+    <h4>Suggested Users:</h4>
+  <% else %>
+    <h4>You searched for <%= params[:search] %>:</h4>
+  <% end %>
+
+  <% if @users.present? %>
+    <% @users.each do |user| %>
+     <p><a href="/users/<%= user.id %>"> @<%= user.username %></a></p>
+    <% end %>
+  <% end %>
+</div>
