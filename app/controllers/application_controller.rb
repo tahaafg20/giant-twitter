@@ -170,6 +170,30 @@ class ApplicationController < Sinatra::Base
     @tweet.save
     redirect "/tweets/#{@tweet.id}"
   end
+
+  patch '/tweets/:id/like' do #like action
+    if Like.find_by(user_id: session[:user_id], tweet_id: params[:id])
+      redirect "/tweets/#{params[:id]}"
+    else
+    @like = Like.new(tweet_id: params[:id], user_id: session[:user_id] )
+    @like.save
+    redirect "/tweets/#{params[:id]}"
+    end
+  end
+
+  post '/tweets/:id/retweet' do #retweet action
+
+    new_tweet = Tweet.new(title: params[:new_title])
+    new_tweet.user_id = current_user.id
+    new_tweet.retweet_id = params[:id]
+    if new_tweet.save
+      # redirect "users/#{current_user.id}/my_question"
+      redirect "/tweets/#{new_tweet.id}"
+    else
+      @error = new_tweet.errors.full_messages.first #the error is from the validation whenever you try to save something in
+     end
+
+  end
   
   post "/users/:id/follow" do
     user = User.find(params[:id])
