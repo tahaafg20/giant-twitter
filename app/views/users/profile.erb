@@ -1,58 +1,85 @@
 <div class="container"> 
 
- <div class= "row">
-<div class="col-md-3 col-md-offset-4">
-
     <div class="panel panel-primary">
       <div class="panel-heading">
       <div style="text-align: center;">
-        <h3><%= @user.name %></h3>
-        <h4>@<%= @user.username %></h4>
+        <h3>Name: <%= @user.name %></h3>
+        <h4>User Name: @<%= @user.username %></h4>
 
         <% if current_user && current_user.id == params[:id].to_i %>
           <form action="/users/<%= @user.id %>/edit">
-            <input type="submit" value="Edit Profile" class="btn btn-default">
+            <input type="submit" value="Edit My Profile" class="btn btn-warning">
           </form>
         <% elsif current_user.following?(@user) %>
 	        <form action="/users/<%= @user.id %>/unfollow" method="post">
               <input type="hidden" name="_method" value="DELETE">
-		          <input type="submit" value="Unfollow" class="btn btn-default">
+		          <input type="submit" value="Unfollow" class="btn btn-danger">
 	        </form>
         <% else %>
           <form action="/users/<%= @user.id %>/follow" method="post">
-            <input type="submit" value="Follow" class="btn btn-default">
+            <input type="submit" value="Follow" class="btn btn-success">
           </form>
         <% end %> 
       </div>
     </div>
       <div class="panel-body">
-               <p style="text-align: center;">Meows: <%= @user.tweets.count %> </p>
-         <p style="text-align: center;"><a class="link" href="/users/<%= @user.id %>/checkfollowing">Following: <%= @user.followed.count %></a> 
-          <a class="link" href="/users/<%= @user.id %>/checkfollowers">Followers: <%= @user.followers.count %></a></p>
+               <p style="text-align: center;"><b>Total Tweets: <%= @user.tweets.count %> </b></p>
+         <p style="text-align: center;"><a class="link" href="/users/<%= @user.id %>/checkfollowing">Following: <%= @user.followed.count %></a> -|- 
+         <a class="link" href="/users/<%= @user.id %>/checkfollowers">Followers: <%= @user.followers.count %></a></p>
 
       </div>
     </div>
 
 
-</div>
-
-
-
-</div>
-
-
 <% if @currenttweets.present? %>
-<div class="col-md-12">
 
 <% @currenttweets.each do |tweet|%>
+
 <div class="panel panel-default">
   <div class="panel-body">
-  <p><a href="/users/<%= tweet.user.id %>"> @<%= tweet.user.username %></a> 
+  <p style="background: orange"><a href="/users/<%= tweet.user.id %>"> @<%= tweet.user.username %></a> 
  <time class="timeago" datetime="<%= tweet.created_at.getutc.iso8601.to_s %>"><%= tweet.created_at.strftime("%l:%M %p %v") %></time>
 </p>
 <p><a class="link" href="/tweets/<%= tweet.id %>"><%= tweet.title %></a></p>
 
+<% if tweet.retweet_id %>
+<% @the_original = Tweet.find(tweet.retweet_id) %>
+
+<div class="container" style="border: 1px solid silver; width: 80%;"> 
+<p style="background: orange"><a href="/users/<%= @the_original.user.id %>"> @<%= @the_original.user.username %></a> 
+<time class="timeago" datetime="<%= @the_original.created_at.getutc.iso8601.to_s %>"><%= tweet.created_at.strftime("%l:%M %p %v") %></time></p>
+<b><%= @the_original.title %></b> <br> 
+
+ <br>
+
+<form action="/tweets/<%= @the_original.id %>/like" method="post">
+  <input id="hidden" type="hidden" name="_method" value="PATCH">
+    <input type="submit" value="&#10084;  <%= @the_original.likes.count %>" class="btn btn-info">
+  </form>
+
 </div>
+<% end %>
+<br>
+
+<div class="flex-container" style="display: flex;">
+
+<div>
+  <form action="/tweets/<%= tweet.id %>/retweet" method="post">
+  <%# <input id="hidden" type="hidden" name="_method" value="PATCH"> %>
+    <input type='text' name="new_title" placeholder="add comment here" maxlength="140" style="font-size: 18px; height: 32px; width: 440px; border: 2px solid orange;">
+    <input type="submit" value="&#8652;  Retweet" class="btn btn-warning">
+  </form>
+</div>
+<div style="padding-left: 20px">
+<form action="/tweets/<%= tweet.id %>/like" method="post">
+  <input id="hidden" type="hidden" name="_method" value="PATCH">
+    <input type="submit" value="&#10084;  <%= tweet.likes.count %>" class="btn btn-info">
+  </form>
+  </div>
+</div>
+</div>
+
+
 </div>
 
 <% end %>
@@ -61,8 +88,8 @@
 </div>
 <% else %>
 
-<div class="col-md-3 col-md-offset-4">
-  <b style="text-align: center; display: block;">This user has no meows yet!</b>
+<div>
+  <h3 style="text-align: center; display: block;">This user has no tweets yet!</h3>
 </div>
 
 <% end %>

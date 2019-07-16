@@ -1,40 +1,63 @@
-<div class="container"> 
-<p><a href="/users/<%= @tweet.user.id %>"> @<%= @tweet.user.username %></a> 
+<div class="container" style="border: 1px solid gray; background: white"> 
+<p style="background: orange"><a href="/users/<%= @tweet.user.id %>"> @<%= @tweet.user.username %></a> 
 <time class="timeago" datetime="<%= @tweet.created_at.getutc.iso8601.to_s %>"><%= @tweet.created_at.strftime("%l:%M %p %v") %></time></p>
-<b><%= @tweet.title %></b> <br>
+<b><%= @tweet.title %></b> <br><br>
 
+<% if @tweet.retweet_id %>
+<% @the_original = Tweet.find(@tweet.retweet_id) %>
+
+<div class="container" style="border: 1px solid gray; width: 80%;"> 
+<p style="background: orange"><a href="/users/<%= @the_original.user.id %>"> @<%= @the_original.user.username %></a> 
+<time class="timeago" datetime="<%= @the_original.created_at.getutc.iso8601.to_s %>"><%= @tweet.created_at.strftime("%l:%M %p %v") %></time></p>
+<b><%= @the_original.title %></b> <br> <br>
+
+<form action="/tweets/<%= @the_original.id %>/like" method="post">
+  <input id="hidden" type="hidden" name="_method" value="PATCH">
+    <input type="submit" value="&#10084;  <%= @the_original.likes.count %>" class="btn btn-info">
+  </form>
+
+</div>
+<% end %>
+
+<br><br>
+<div class="flex-container" style="display: flex;">
 <% if current_user && current_user.id == @tweet.user_id.to_i %>
+
+
+<div style="padding: 5px">
   <form action="/tweets/<%= @tweet.id %>" method=post>
     <input type="hidden" name="_method" value="DELETE">
-    <input type="submit" value="Delete" class="btn btn-default">
+    <input type="submit" value="Delete" class="btn btn-danger">
   </form>
-
+  </div>
+<div style="padding: 5px">
   <form action="/tweets/<%= @tweet.id %>/edit">
-    <input type="submit" value="Edit" class="btn btn-default">
+    <input type="submit" value="Edit" class="btn btn-success">
   </form>
-
+</div>
 <% end %>
 <br>
-
+<div style="padding: 5px">
 <form action="/tweets/<%= @tweet.id %>/like" method="post">
   <input id="hidden" type="hidden" name="_method" value="PATCH">
     <input type="submit" value="&#10084;  <%= @tweet.likes.count %>" class="btn btn-info">
-  </form>
-  <br>
-
+  </form> </div>
+  
+<div style="padding: 5px">
   <button class="btn btn-warning" onclick="myFunction()">Retweet</button>
   <br>
 <br><br>
 <div id="myDIV" style="display: none;">
   <form action="/tweets/<%= @tweet.id %>/retweet" method="post">
   <%# <input id="hidden" type="hidden" name="_method" value="PATCH"> %>
-    <input type='text' name="new_title" placeholder="add comment here">
+    <textarea type='text' name="new_title" placeholder="add comment here" maxlength="140" rows="4" cols="60">Add Your Comment here...</textarea>
+    <br>
     <input type="submit" value="&#8652;  Retweet" class="btn btn-warning">
   </form>
 </div>
+</div>
 
-
-
+</div>
 </div>
 
 <script type="text/javascript">
@@ -42,6 +65,11 @@
 
   function myFunction() {
   var x = document.getElementById("myDIV");
+
+  if (x.style.display === "block") {
+    x.style.display = "none";
+  } else {
     x.style.display = "block";
+  }
 }
 </script> 

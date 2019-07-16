@@ -1,0 +1,112 @@
+<div class="container"> 
+ <div class= "row">
+<div class="col-md-4">
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 style="display: inline;">User: <%= current_user.name %></h3> 
+        <h4 style="display: inline;">@<%= current_user.username %></h4>
+      </div>
+      <div class="panel-body">
+         <p><a class="link" href="/users/<%= current_user.id %>/checkfollowing">Following: <%= current_user.followed.count %></a> 
+          <a class="link" href="/users/<%= current_user.id %>/checkfollowers">Followers: <%= current_user.followers.count %></a></p>
+         <h4>Tweets: <%= current_user.tweets.count %> </h4>
+      </div>
+    </div>
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h4>Suggested Users</h4>
+      </div>
+      <div class="panel-body">
+      <% if @suggested_users.present? %>
+      <% @suggested_users.sample(3).each do |user| %>
+      <p><a href="/users/<%= user.id %>"> @<%= user.username %></a></p> 
+       <% end %>
+       <% end %>
+      </div>
+    </div>
+
+
+</div>
+
+   <div class="col-md-8">
+     <div class="tweetarea">
+       <form method="post" action="/tweet">
+         <textarea class="form-control" rows="8" cols="80" name="tweet[title]" placeholder="What's happening?" maxlength="140" style="width: 110%; height: 270px; border: 2px solid blue"></textarea>
+         <span class="buttonfortxtarea"><button type="submit" class="btn btn-primary" style="width: 200px; height: 50px; font-size: 25px; margin-left: auto; margin-right: auto"><span class="glyphicon glyphicon-pencil"> </span> Tweet </button></span>
+       </form>
+      <%= @error if @error.present? %> 
+     </div>
+   </div>
+</div>
+
+ <div class= "row">
+
+<div class="col-md-12">
+<% @maintweets.each do |tweet| %>
+<div class="panel panel-default">
+  <div class="panel-body">
+  <p><a href="/users/<%= tweet.user.id %>"> @<%= tweet.user.username %></a> 
+  <time class="timeago" datetime="<%= tweet.created_at.getutc.iso8601.to_s %>"><%= tweet.created_at.strftime("%l:%M %p %v") %></time>
+</p>
+<p><a class="link" href="/tweets/<%= tweet.id %>"><%= tweet.title %></a></p>
+<br>
+<% if tweet.retweet_id %>
+<% @the_original = Tweet.find(tweet.retweet_id) %>
+
+<div class="container" style="border: 1px solid silver; width: 80%;"> 
+<p><a href="/users/<%= @the_original.user.id %>"> @<%= @the_original.user.username %></a> 
+<time class="timeago" datetime="<%= @the_original.created_at.getutc.iso8601.to_s %>"><%= tweet.created_at.strftime("%l:%M %p %v") %></time></p>
+<b><%= @the_original.title %></b> <br> <br>
+
+<form action="/tweets/<%= @the_original.id %>/like" method="post">
+  <input id="hidden" type="hidden" name="_method" value="PATCH">
+    <input type="submit" value="&#10084;  <%= @the_original.likes.count %>" class="btn btn-info">
+  </form>
+  <br>
+
+</div>
+<% end %>
+
+<br>
+<div class="flex-container" style="display: flex;">
+
+<div>
+  <form action="/tweets/<%= tweet.id %>/retweet" method="post">
+  <%# <input id="hidden" type="hidden" name="_method" value="PATCH"> %>
+    <input type='text' name="new_title" placeholder="add comment here" maxlength="140" style="font-size: 18px; height: 32px; width: 440px; border: 2px solid orange;">
+    <input type="submit" value="&#8652;  Retweet" class="btn btn-warning">
+  </form>
+</div>
+<div style="padding-left: 20px">
+<form action="/tweets/<%= tweet.id %>/like" method="post">
+  <input id="hidden" type="hidden" name="_method" value="PATCH">
+    <input type="submit" value="&#10084;  <%= tweet.likes.count %>" class="btn btn-info">
+  </form>
+</div>
+
+</div>
+</div>
+</div>
+<% end %>
+
+</div>
+<br>
+
+
+
+</div>
+<script type="text/javascript">
+  $("time.timeago").timeago();
+
+  function myFunction() {
+  var x = document.getElementById("myDIV");
+
+  if (x.style.display === "block") {
+    x.style.display = "none";
+  } else {
+    x.style.display = "block";
+  }
+}
+</script>
