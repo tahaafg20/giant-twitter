@@ -38,11 +38,4 @@ class User < ActiveRecord::Base
 
 end
 
-   #First, setup the relationship to the join table using the first line. 
-   #We need to specify exactly which foreign_key for the relationship to use. 
-   #Normally, when we declare a relationship to a join table, the foreign key is inferred 
-   #using the name of the model itself. In this case, since the follower_id is not just a user_id, 
-   #we need to be explicit.
-
-
 
